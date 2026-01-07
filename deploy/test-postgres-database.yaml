@@ -1,0 +1,71 @@
+---
+# Test Case 1: Basic PostgreSQL database
+apiVersion: databases.mycompany.com/v1
+kind: PostgresDatabase
+metadata:
+  name: billing-db
+  namespace: production
+spec:
+  version: 17
+  replicas: 3
+  storage: 100Gi
+  backup: true
+  monitoring: true
+
+---
+# Test Case 2: Single instance development database
+apiVersion: databases.mycompany.com/v1
+kind: PostgresDatabase
+metadata:
+  name: dev-db
+  namespace: development
+spec:
+  version: 16
+  replicas: 1
+  storage: 20Gi
+  backup: false
+  monitoring: false
+  resources:
+    requests:
+      cpu: "50m"
+      memory: "128Mi"
+    limits:
+      cpu: "200m"
+      memory: "512Mi"
+
+---
+# Test Case 3: High-performance production database
+apiVersion: databases.mycompany.com/v1
+kind: PostgresDatabase
+metadata:
+  name: analytics-db
+  namespace: production
+spec:
+  version: 17
+  replicas: 5
+  storage: 500Gi
+  backup: true
+  monitoring: true
+  backupRetention: "30d"
+  resources:
+    requests:
+      cpu: "500m"
+      memory: "2Gi"
+    limits:
+      cpu: "2000m"
+      memory: "8Gi"
+
+---
+# Test Case 4: PostgreSQL 15 for legacy compatibility
+apiVersion: databases.mycompany.com/v1
+kind: PostgresDatabase
+metadata:
+  name: legacy-app-db
+  namespace: production
+spec:
+  version: 15
+  replicas: 3
+  storage: 200Gi
+  backup: true
+  monitoring: true
+  backupRetention: "14d"

@@ -1,0 +1,129 @@
+apiVersion: apiextensions.k8s.io/v1
+kind: CustomResourceDefinition
+metadata:
+  name: postgresdatabases.databases.mycompany.com
+  annotations:
+    description: "Self-service PostgreSQL databases"
+spec:
+  group: databases.mycompany.com
+  names:
+    kind: PostgresDatabase
+    plural: postgresdatabases
+    shortNames:
+    - pgdb
+    - postgres
+  scope: Namespaced
+  versions:
+  - name: v1
+    served: true
+    storage: true
+    schema:
+      openAPIV3Schema:
+        type: object
+        properties:
+          apiVersion:
+            type: string
+          kind:
+            type: string
+          metadata:
+            type: object
+          spec:
+            type: object
+            required:
+            - version
+            - replicas
+            - storage
+            properties:
+              version:
+                type: integer
+                minimum: 13
+                maximum: 17
+                description: "PostgreSQL major version"
+                enum: [13, 14, 15, 16, 17]
+              replicas:
+                type: integer
+                minimum: 1
+                maximum: 10
+                default: 1
+                description: "Number of database replicas (1 = single, 3 = HA)"
+              storage:
+                type: string
+                pattern: '^\d+(Gi|Ti)$'
+                description: "Storage capacity (e.g., 100Gi, 1Ti)"
+              backup:
+                type: boolean
+                default: true
+                description: "Enable automated backups to S3"
+              monitoring:
+                type: boolean
+                default: true
+                description: "Enable PMM monitoring"
+              resources:
+                type: object
+                description: "Resource limits and requests"
+                properties:
+                  requests:
+                    type: object
+                    properties:
+                      cpu:
+                        type: string
+                        default: "100m"
+                      memory:
+                        type: string
+                        default: "256Mi"
+                  limits:
+                    type: object
+                    properties:
+                      cpu:
+                        type: string
+                        default: "500m"
+                      memory:
+                        type: string
+                        default: "1Gi"
+              backupRetention:
+                type: string
+                default: "7d"
+                description: "Backup retention period (e.g., 7d, 30d)"
+          status:
+            type: object
+            properties:
+              phase:
+                type: string
+                enum: [Pending, Creating, Ready, Failed, Updating]
+              endpoint:
+                type: string
+                description: "Connection endpoint for the database"
+              replicas:
+                type: integer
+                description: "Actual number of ready replicas"
+              message:
+                type: string
+                description: "Status message or error details"
+              credentialsSecret:
+                type: string
+                description: "Name of secret containing connection credentials"
+              lastBackupTime:
+                type: string
+                format: date-time
+                description: "Timestamp of last successful backup"
+    subresources:
+      status: {}
+    additionalPrinterColumns:
+    - name: Version
+      type: integer
+      jsonPath: .spec.version
+    - name: Replicas
+      type: integer
+      jsonPath: .spec.replicas
+    - name: Storage
+      type: string
+      jsonPath: .spec.storage
+    - name: Status
+      type: string
+      jsonPath: .status.phase
+    - name: Endpoint
+      type: string
+      jsonPath: .status.endpoint
+    - name: Age
+      type: date
+      jsonPath: .metadata.creationTimestamp
