@@ -1,0 +1,87 @@
+# IDE and editor files
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# OS generated files
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+ehthumbs.db
+Thumbs.db
+
+# Environment files
+.env
+.env.local
+.env.*.local
+
+# Log files
+*.log
+logs/
+
+# Temporary files
+*.tmp
+*.temp
+temp/
+tmp/
+
+# Build outputs
+dist/
+build/
+bin/
+
+# Coverage reports
+coverage/
+coverage.xml
+*.cover
+
+# Dependency directories
+vendor/
+
+# Kubernetes secrets
+*.key
+*.crt
+*.pem
+secrets/
+*.secrets.yaml
+*.secrets.yml
+
+# Local development
+local/
+dev/
+development/
+kubeconfig-*
+
+# Downloaded tools
+kubectl
+helm
+kustomize
+
+# Backup files
+*.bak
+*.backup
+
+# Database files
+*.db
+*.sqlite
+*.sqlite3
+
+# Test outputs
+test-results/
+junit.xml
+
+# History files
+.history
+
+# Sensitive design documents (removed from history)
+*design*.md
+*self-service*.md
+*internal*.md
+
+# Config files
+config/
+local-config.*
